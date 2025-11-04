@@ -1,0 +1,131 @@
+#+TITLE:Man extras
+
+* NAME
+
+man-extras - Extras on manpages
+
+
+* MANPATH MAP
+
+A mapping that =man= applies when looking for manpages.  This means that
+manpages for our programs become findable simply by virtue of them being in
+the PATH if the relative placement of the program and its manpage follows
+the following table:
+
+| PATH | manpath |
+| <X>/<Y> | <X>/share/man |
+| <X>/<Y> | <X>/man |
+| <X>     | <X>/man |
+| <X>     | <X>/share/man |
+
+In other words, the first row says that if the directory containing the
+executable is =$d=, then the path =$d/../share/man= will be searched and in
+most cases, if =$R= is the root of a package, then the executables will be in
+=$R/bin= and manpages in =$R/share/man=.
+
+Running =manpath --debug= shows its reasoning
+#+begin_src
+taking only the directories that exist.
+path directory <X>/bin is not in the config file
+but does have a ../man, man, ../share/man, or share/man subdirectory
+adding <X>/share/man to manpath
+#+end_src
+
+* MANPATH VARIABLE
+
+The variable =MANPATH= defines a colon-separated list of search paths.
+Defining it *will* disable the mapping *unless* it either has
+- A leading colon : =:A:B:C=
+- Two colons in a row : =A:B::C=
+- A trailing colon : =A:B:C:=
+
+If one of these three conditions are met, =man= will search in a combination
+of the the paths in =MANPATH= and the paths from the manpath mapping.
+
+The list produced by the mapping will be inserted in the position where the
+extra colon appears.  So if
+~PATH=D/bin:E/bin~ where =D= contains a directory =share/man= and =E=
+contains a directory =man=, and ~MANPATH=A:B::C~, then the effective search will be as
+if ~MANPATH=A:B:D/share/man:E/man:C~
+
+* SECTIONS
+
+The elements of =MANPATH= are expected to contain numbered subdirectories
+
+- *man1*: Executable programs or shell commands
+- *man2*: System calls (functions provided by the kernel)
+- *man3*: Library calls (functions within program libraries)
+- *man4*: Special files (usually found in /dev)
+- *man5*: File formats and conventions eg /etc/passwd
+- *man6*: Games
+- *man7*: Miscellaneous (including macro packages and conventions), e.g. man(7), groff(7)
+- *man8*: System administration commands (usually only for root)
+- *man9*: Kernel routines [Non standard]
+
+* FILES
+
+and the files in those directories are expected to end with =.n= where =n= is
+the section number.
+
+The simplest way to create these files is to use a markup language like
+Markdown or Org and to use pandoc to translate to TROFF format.
+
+With pandoc, this is
+
+#+begin_src
+pandoc -s -f org -t man FILE -o OUTPUT_NAME
+#+end_src
+
+To take a directory, one could do
+
+#+begin_src
+source_dir=$PWD/share
+install_dir=$PWD/install-dir
+mkdir -p ${install_dir}
+mkdir -p ${install_dir}/share
+for d in ${source_dir}/man/man* ; do
+    section_number=${d##*man/man}
+    mkdir -p ${install_dir}/share/man/man${section_number}
+    for f in $d/* ; do
+        basename=${f##*/}
+        name=${basename%%.org}
+        pandoc -s -f org -t man ${f} -o ${install_dir}/share/man/man${section_number}/${name}.${section_number}
+    done
+done
+#+end_src
+
+This would take orgmode file =${source_dir}/share/man/man1/my-command.org= to
+TROFF file =${install_dir}/share/man/man1/my-command.1=.  A source
+
+#+begin_src
+%{source_dir}/share
+└── man
+    ├── man1
+    │   └── listing-monitor.org
+    └── man7
+        ├── App.org
+        ├── man-extras.org
+        └── vim.org
+#+end_src
+
+becomes
+
+#+begin_src
+%{install_dir}/share
+└── man
+    ├── man1
+    │   └── listing-monitor.1
+    └── man7
+        ├── App.7
+        ├── man-extras.7
+        └── vim.7
+#+end_src
+
+* SEE ALSO
+
+[[https://gitlab.com/philippecarphin/ormanpages]]
+
+
+
+
+

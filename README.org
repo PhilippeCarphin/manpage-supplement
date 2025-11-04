@@ -1,0 +1,4 @@
+#+TITLE: Manpage supplements
+
+A repo of manpages to allow me to quickly access notes on various topics or
+add a manpage for commands that don't have them.

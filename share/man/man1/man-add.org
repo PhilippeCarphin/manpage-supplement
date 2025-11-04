@@ -1,0 +1,29 @@
+#+TITLE:man-add
+
+* NAME
+
+man-add - Add a manpage to manpage-supplement-personal repo
+
+* SYNOPSIS
+
+#+begin_src shell
+man-add SECTION NAME
+#+end_src
+
+* DESCRIPTION
+
+Add a manpage in section number ~SECTION~ with name ~NAME~.
+
+* NOTES
+
+The command verifies that this repo does not already contain a manpage with this
+name.
+
+* TODO
+
+Should use ~man -w~ to check for preexisting manpages or find any other way to
+make the mechanism more reliable.
+
+* AUTHORS
+
+Philippe Carphin

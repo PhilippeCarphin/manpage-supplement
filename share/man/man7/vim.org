@@ -1,0 +1,19 @@
+#+TITLE: Personal vim extras
+
+* NAME
+
+vim-extras - Quick reference for commands that I want to remember
+
+* COMMANDS
+
+Opening file from path in text file
+
+| gf      | open in the same window ("goto file") |
+| <c-w>f  | open in a new window (Ctrl-w f) |
+| <c-w>gf | open in a new tab (Ctrl-w gf) |
+
+Manpages
+
+| K | Open manpage for string under cursor |
+
+Numeric argument controls manpage section so 7K does =man 7 <str>=

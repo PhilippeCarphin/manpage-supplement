@@ -1,0 +1,39 @@
+#+TITLE:gdb-help
+
+* NAME
+
+Help on gdb
+
+* BASIC COMMANDS
+
+- ~break FUNCNAME~: Break when entering the function
+- ~break LINENO~: Add a breakpoint on this line of the file currently being
+  viewed.
+- ~next~/~n~: Normal stepping.
+- ~step~/~s~: Step into function.
+- ~continue~/~c~: Continue (resume execution).
+- ~start~: Start the program and break upon reaching main function
+- ~run~: Start and run (restarts if already started).
+- ~backtrace~/~bt~: Print a backtrace of the currently selected theread
+- ~frame NUMBER~: Switch to stack frame by number
+
+* THREADS
+
+- Switching threads: do ~info threads~ to list the threads then do ~thread <N>~
+  to switch to that thread.
+- ~bt~, ~backtrace~: Show a backtrace.
+- ~frame <N>~: Switch to frame #N in the backatrace of the currently selected
+  thread.
+
+* ATTACHING
+
+Just use ~-p PID~ to attach to a running process.
+
+
+* MANIPULATING BREAKPOINTS
+
+- ~clear LINENO~: Remove breakpoint at lineno
+- ~info break~: List the breakpoints
+- ~delete NUMBER~: Delete breakpoint by its number
+- ~save breakpoints FILENAME~: Save current breakpoints and watchpoints to
+  ~FILENAME~ which can be loaded using ~source FILENAME~.
