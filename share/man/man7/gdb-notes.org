@@ -1,4 +1,4 @@
-#+TITLE:gdb-help
+#+TITLE:gdb-notes
 
 * NAME
 
