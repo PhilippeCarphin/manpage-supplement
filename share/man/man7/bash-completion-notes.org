@@ -1,0 +1,121 @@
+#+TITLE:manpage-template
+
+* NAME
+
+bash-completion-notes - notes on BASH completion
+
+* FILE LOCATION
+
+Files should go in =$prefix/share/bash-completion/completions= with
+=XDG_DATA_DIRS= containing =$prefix/share= as one of its elements.  The file
+should be named =${command}= where =${command}= is the name of the command it
+provides completion for.
+
+With version 2.12+ (that use =_comp_load=), the files will be found if
+=$prefix/bin= is in =PATH=.
+
+** Lookup summary
+
+*** =BASH_COMPLETION_USER_DIR=, =XDG_DATA_HOME=, =$HOME/.local/share=
+
+If =BASH_COMPLETION_USER_DIR= is set, look in =$d/bash-completion/completions=
+for d in the colon-separated list.
+
+Otherwise if =XDG_DATA_HOME= is set, look in =${XDG_DATA_HOME}/bash-completion/completions=
+
+Otherwise look in =$HOME/.local/share/bash-completion/completions=.
+
+*** Included completions
+
+The subdirectory =completions= of the base directory of =bash-completion=.
+
+*** =PATH=
+
+Only in newer versions that have =_comp_load=.
+
+If the command contains a =/=, use the containing directory and realpath of that directory.
+
+For each directory =$d= in =$PATH=, check =${d%/bin}/share/bash-completion/completions=
+
+*** =XDG_DATA_DIRS=
+
+For each directory =$d= in =$XDG_DATA_DIRS=, check =${d%/bin}/share/bash-completion/completions=
+
+* LAZY LOADING
+
+** Directories
+
+The code for =_comp_load= in recent versions and =__load_completion= in earlier
+ones has this (=__load_completion= does not have #3 and treats
+=BASH_COMPLETION_USER_DIR= as a single directory rather than a colon-separated
+list):
+
+#+begin_src shell
+# Lookup order:
+# 1) From BASH_COMPLETION_USER_DIR (e.g. ~/.local/share/bash-completion):
+# User installed completions.
+if [[ ${BASH_COMPLETION_USER_DIR-} ]]; then
+    _comp_split -F : paths "$BASH_COMPLETION_USER_DIR" &&
+        dirs+=("${paths[@]/%//completions}")
+else
+    dirs=("${XDG_DATA_HOME:-$HOME/.local/share}/bash-completion/completions")
+fi
+
+# 2) From the location of bash_completion: Completions relative to the main
+# script. This is primarily for run-in-place-from-git-clone setups, where
+# we want to prefer in-tree completions over ones possibly coming with a
+# system installed bash-completion. (Due to usual install layouts, this
+# often hits the correct completions in system installations, too.)
+dirs+=("$_comp__base_directory/completions")
+
+# 3) From bin directories extracted from the specified path to the command,
+# the real path to the command, and $PATH
+paths=()
+[[ $cmd == /* ]] && paths+=("${cmd%/*}")
+_comp_realcommand "$cmd" && paths+=("${REPLY%/*}")
+_comp_split -aF : paths "$PATH"
+for dir in "${paths[@]%/}"; do
+    [[ $dir == ?*/@(bin|sbin) ]] &&
+        dirs+=("${dir%/*}/share/bash-completion/completions")
+done
+
+# 4) From XDG_DATA_DIRS or system dirs (e.g. /usr/share, /usr/local/share):
+# Completions in the system data dirs.
+_comp_split -F : paths "${XDG_DATA_DIRS:-/usr/local/share:/usr/share}" &&
+    dirs+=("${paths[@]/%//bash-completion/completions}")
+#+end_src
+
+** Files
+
+After =dirs= has been set, =_comp_load= has
+
+#+begin_src shell
+for prefix in "" _; do # Regular from all dirs first, then fallbacks
+    for i in ${!dirs[*]}; do
+        dir=${dirs[i]}
+        for compfile in "$prefix$cmdname" "$prefix$cmdname.bash"; do
+            compfile="$dir/$compfile"
+            if [[ -e $compfile ]] && . "$compfile" "$cmd" "$@"; then
+                return 0
+            fi
+        done
+    done
+done
+#+end_src
+
+which will source the first of these files =${cmdname}=, =${cmdname}.bash=,
+=_${cmdname}=, =_${cmdname}.bash= to be found in one of the elements of =dirs=.
+
+* Adding completions
+
+- Add =completions/_<CMD>= where =<CMD>= is the name of the command that should
+  be completed.
+
+- Run =generate <CMD>=.  This creates =test/t/test_<CMD>.py=.
+
+- Add a test that has =@pytest.mark.complete("...", require_cmd=True)=.  This
+  is because =update-test-cmd-list= greps for files that contain such a line.
+
+- Run =update-test-cmd-list=.  This adds a line in =test/t/Makefile.am= and
+  in =test/test-cmd-list.txt=.
+

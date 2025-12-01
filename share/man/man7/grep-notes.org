@@ -1,0 +1,6 @@
+#+TITLE:grep-notes
+
+* COMMON OPTIONS
+
+- =-L= files without match
+- =-l= files with match

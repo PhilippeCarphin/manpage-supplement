@@ -1,0 +1,11 @@
+#+TITLE:git-notes
+
+* NAME
+
+git-notes - Some quick notes on git commands
+
+* REBASE
+
+- =git rebase [-i] REF --onto ONTO_REF=: The commits that will be selected are
+  the same as if we did the command without =--onto ONTO_REF=.  But they will be
+  applied on top of =ONTO_REF=.

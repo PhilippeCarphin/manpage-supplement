@@ -1,0 +1,23 @@
+#+TITLE:tmux-notes
+
+* NAME
+
+tmux-notes - Notes on TMUX
+
+* PANE MANIPULATION
+
+- *marking*: =select-pane -m= (toggles marking) Default binding =prefix m=
+- *locking*: =select-pane -d= No default binding, unlock with =select-pane
+  -e=
+- *joining*: =join-pane [-h]= Splits the current pane [vertically] and moves the
+  marked pane into the new split instead of starting a new shell.
+
+* MISC
+
+- =-h= for horizontal:  The dividing line is vertical but the panes are next
+  to each other horizontally.
+* GETTING VALUES
+
+In general, =tmux show= but we need to know what scope the thing we want to
+see is in.  For example:
+- =default-command=: =tmux show -g default-command=

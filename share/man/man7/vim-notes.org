@@ -1,0 +1,11 @@
+#+TITLE:vim-notes
+
+* NAME
+
+vim-notes - Notes about Vim
+
+* Vim-fugitive
+
+- Pressing =o= with the cursor on a commit opens =git show= of that commit in
+  a split (instead of pressing Enter which goes to that commit in the same
+  pane)

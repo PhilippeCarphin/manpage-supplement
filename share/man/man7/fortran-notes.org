@@ -1,0 +1,114 @@
+#+TITLE:fortran-notes
+
+* NAME
+
+fortran-notes - Stuff that I keep forgetting about Fortran
+
+* SIMPLE PROGRAM WITH FUNCTIONS
+
+#+begin_src f90
+program main
+  some code
+  contains
+    <functions and subroutines go here>
+end program
+#+end_src
+
+* MODULES
+
+#+begin_src f90
+module my_mod
+  <module variables and stuff>
+  contains
+    <module functions and subroutines>
+end module
+#+end_src
+
+A single-file program can include modules for quick testing:
+#+begin_src f90
+module my_mod
+  <module variables and stuff>
+  contains
+    <module functions and subroutines>
+end module
+
+program main
+  use my_mod
+  some code
+  contains
+    <functions and subroutines go here>
+end program
+#+end_src
+
+* SUBROUTINES
+
+#+begin_src f90
+subroutine name(arg1, arg2,...) bind(C, name="<name>")
+    integer, intent(in) :: arg1
+    integer, intent(out) :: arg2
+    <code>
+end subroutine
+#+end_src
+
+#+begin_src f90
+integer function name(arg1, arg2, ...) bind(C, name="<name>") result(my_res)
+    integer, intent(in) :: arg1
+    integer, intent(out) :: arg2
+    my_res = 0
+end function
+#+end_src
+#+begin_src f90
+function name(arg1, arg2, ...) bind(C, name="<name>") result(my_res)
+    integer, intent(in) :: arg1
+    integer, intent(out) :: arg2
+    integer :: my_res
+    my_res = 0
+end function
+#+end_src
+- The return type can be specified by putting it in front of the =function= keyword
+  or by giving =my_res= a declaration
+- If we never give a value to the variable named as the result, we get a
+  warning.
+- We cannot do =return 0= or =return my_res=.  We can only do =return=
+
+* FORMAT
+
+[[https://pages.mtu.edu/~shene/COURSES/cs201/NOTES/chap05/format.html]]
+
+* CLI ARGS
+
+#+begin_src f90
+program main
+    integer :: argc, i, err, len
+    character(len=:), allocatable :: arg
+    character(len=1024), dimension(:), allocatable :: argv
+
+    argc = command_argument_count()
+
+    ! Option 1: more proper since we allocate the right lenght
+    do i = 0,argc
+        if(allocated(arg)) deallocate(arg)
+        call get_command_argument(i,length=len)
+        allocate(character(len=len) :: arg)
+        call get_command_argument(i, arg, len, err)
+    enddo
+
+    ! Option 2: Easier but we need to use 'trim'
+    allocate(argv(0:argc))
+    do i = 0,argc
+        call get_command_argument(i, argv(i), len, err)
+    enddo
+
+end program
+#+end_src
+- [[https://gcc.gnu.org/onlinedocs/gfortran/COMMAND_005fARGUMENT_005fCOUNT.html][=command_argument_count=]]
+- [[https://fortran-lang.org/learn/intrinsics/system/][=get_command_argument= with better example]]
+- [[https://gcc.gnu.org/onlinedocs/gfortran/GET_005fCOMMAND_005fARGUMENT.html][=get_command_argument=]]
+- [[https://gcc.gnu.org/onlinedocs/gfortran/GET_005fCOMMAND.html][=get_command=: Get the entire command string]]
+
+* CASTING
+
+#+begin_src f90
+use iso_c_binding
+takes_c_long(int(my_c_int, kind=C_LONG))
+#+end_src
