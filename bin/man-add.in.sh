@@ -38,6 +38,7 @@ cp ${src_dir}/manpage-template.org ${new_page}
 
 ${EDITOR:-vim} ${new_page}
 
+cmake -S @CMAKE_SOURCE_DIR@ -B @CMAKE_BINARY_DIR@
 cmake --build @CMAKE_BINARY_DIR@
 cmake --install @CMAKE_BINARY_DIR@
 quickstow -R ${src_dir##*/}
