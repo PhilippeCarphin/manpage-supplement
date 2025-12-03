@@ -8,31 +8,50 @@ fortran-notes - Stuff that I keep forgetting about Fortran
 
 #+begin_src f90
 program main
-  some code
+  <use statements>
+  implicit none
+  <variable declaration>
+  <some code>
   contains
     <functions and subroutines go here>
 end program
 #+end_src
 
+- The order is important:
+  - =use= statements
+  - =implicit none=
+  - Variable declarations
+  - Runnable code (all variables need to be declared before any runnable
+    code).
+
 * MODULES
 
 #+begin_src f90
 module my_mod
+  <use statements>
+  implicit none
   <module variables and stuff>
   contains
     <module functions and subroutines>
 end module
 #+end_src
 
+- The order is important:
+  - =use= statements
+  - =implicit none=
+  - module level variables
+
 A single-file program can include modules for quick testing:
 #+begin_src f90
 module my_mod
+  implicit none
   <module variables and stuff>
   contains
     <module functions and subroutines>
 end module
 
 program main
+  implicit none
   use my_mod
   some code
   contains
