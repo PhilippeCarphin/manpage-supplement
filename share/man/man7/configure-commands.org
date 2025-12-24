@@ -1,0 +1,37 @@
+#+TITLE:configure-commands
+
+* NAME
+
+configure-commands - configure commands for various programs
+
+* TIPS
+
+When a =./configure= says it found something but it doesn't work because it
+wasn't able to build a test program with it, go look at the logs.  That test
+program may be using a specific feature that needs to be activated.  See
+NCURSES.
+
+* NCURSES
+
+#+begin_src shell
+./configure --prefix=PREFIX --with-termlib --enable-termcap --enable-widec \
+            --enable-pc-files --with-pkg-config-libdir=PREFIX/lib/pkgconfig
+#+end_src
+
+The =./configure= for tig found ncurses but said it was no good because its
+test program uses =libtinfo.{a/so}=.  I had to look at the logs to find that
+the error was at linking: =ld: Could not find -ltinfo=.
+
+* LYNX
+
+[[https://lynx.invisible-island.net/lynx_help/lynx_help_main.html]]
+
+#+begin_src shell
+./configure --with-ssl --prefix=<>
+#+end_src
+
+NOTE: Redoing it with =--with-ssl= after doing it without doesn't work.
+
+* AUTHORS
+
+Philippe Carphin
