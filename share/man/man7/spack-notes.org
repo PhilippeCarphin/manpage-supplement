@@ -70,3 +70,46 @@ Example:
 - Version: =@=
 
 Run =spack help --spec= for more details.
+
+* COMPILERS
+
+[[https://spack.readthedocs.io/en/latest/configuring_compilers.html][Spack doc: Configuring compilers]] contains information about finding compilers
+automatically and manual configuration options:
+
+- =spack compiler find= automatically detect available compilers.  It will
+  either add things to =~/.spack/packages.yaml= or to the currently active
+  environment's config (=${spack}/var/spack/environments/${env}/spack.yaml=)
+- Manual compiler configuration can be done by editing one of the files named
+  above.
+  - We can flags to use for that compiler.
+  - We can set a module to load for the compiler.
+
+This is an example showing all the possible keys listed in the above
+documentation.  It is not an example of a valid or good configuration.
+#+begin_src yaml
+packages:
+  intel-oneapi-compilers:
+    externals:
+    - spec: intel-oneapi-compilers@2025.1.0
+      prefix: /opt/intel/oneapi
+      extra_attributes:
+        compilers:
+          c: /opt/intel/oneapi/compiler/2025.1/bin/icx
+          cxx: /opt/intel/oneapi/compiler/2025.1/bin/icpx
+          fortran: /opt/intel/oneapi/compiler/2025.1/bin/ifx
+        flags:
+          cflags: -O3 -fPIC
+          cxxflags: -O3 -fPIC
+          cppflags: -O3 -fPIC
+        environment:
+          set:
+            MKL_ROOT: "/path/to/mkl/root"
+          unset: # A list of environment variables to unset
+          - CC
+          prepend_path: # Similar for append|remove_path
+            LD_LIBRARY_PATH: /ld/paths/added/by/setvars/sh
+        extra_rpaths:
+        - /path/to/some/compiler/runtime/directory
+        - /path/to/some/other/compiler/runtime/directory
+      modules: [gcc/10.5.0]
+#+end_src
