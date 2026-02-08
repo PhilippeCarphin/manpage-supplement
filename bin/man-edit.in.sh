@@ -7,7 +7,7 @@ if ! manpages=($(find ${src_dir}/share/man -name "*$1*")) ; then
 fi
 
 for manpage in "${manpages[@]}" ; do
-    vim ${manpage%.*}.org
+    ${EDITOR:-vim} ${manpage%.*}.org
 done
 
 cmake --build @CMAKE_BINARY_DIR@
