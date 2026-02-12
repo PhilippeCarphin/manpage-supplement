@@ -1,0 +1,18 @@
+#+TITLE:my-keys
+
+* NAME
+
+my-keys - Some key bindings that I always forget
+
+* BASH
+
+|--------------+-------+-------------------------------+----------------|
+| Key(s)       | Mode  | Action                        | Default/custom |
+|--------------+-------+-------------------------------+----------------|
+| ESC ESC      | emacs | Switch to vi-editing-mode     | Custom         |
+| C-k          | vi    | Switch to emacs-editing-mode  | Custom         |
+| C-a C-e      | vi    | Do like emacs                 | Custom         |
+| C-n C-p      | vi    | Do like emacs                 | Custom         |
+| C-f C-b      | emacs | shell-{forward,backward}-word | Custom         |
+| ESC l, ESC h | emacs | {forward,backward}-word       | Custom         |
+|--------------+-------+-------------------------------+----------------|
