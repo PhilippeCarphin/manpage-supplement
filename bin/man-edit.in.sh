@@ -10,5 +10,6 @@ for manpage in "${manpages[@]}" ; do
     ${EDITOR:-vim} ${manpage%.*}.org
 done
 
+cmake -S ${src_dir} -B @CMAKE_BINARY_DIR@
 cmake --build @CMAKE_BINARY_DIR@
 cmake --install @CMAKE_BINARY_DIR@
