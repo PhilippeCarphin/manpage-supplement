@@ -16,3 +16,11 @@ my-keys - Some key bindings that I always forget
 | C-f C-b      | emacs | shell-{forward,backward}-word | Custom         |
 | ESC l, ESC h | emacs | {forward,backward}-word       | Custom         |
 |--------------+-------+-------------------------------+----------------|
+
+* MACOS
+
+|--------------+-------------------------------+----------------|
+| Key(s)       | Action                        | Default/custom |
+|--------------+-------------------------------+----------------|
+| C-⌘-Space    | Enter unicode characters      | Default        |
+|--------------+-------------------------------+----------------|

@@ -13,6 +13,10 @@ spack spec
 
 spack config edit
 spack add PACKAGE_SPEC
+spack install [--verbose] [--keep-stage] [--keep-prefix] PACKAGE_SPEC
+spack locate PACKAGE
+spack build-env PACKAGE -- /bin/sh
+spack clean --stage
 
 spack compiler find
 
@@ -20,11 +24,12 @@ spack list NAME|GLOB
 spack info PACKAGE
 
 spack repo create DIRECTORY NAMESPACE
-spack cd --repo NAMESPACE
+spack cd (--repo NAMESPACE | PACKAGE_SPEC)
 
 spack create <package-name> [--namespace NAMESPACE] [--template cmake|make|...]
 spack edit <package-name>
 spack concretize [--force]
+spack reindex
 #+end_src
 
 * SETUP
@@ -168,6 +173,21 @@ Edit the package file with
 spack edit <package-name>
 #+end_src
 
+See [[https://spack.readthedocs.io/en/latest/packaging_guide_build.html#packaging-workflow-and-commands][Packaging workflow and commands]] explains the edit-install loop with commands
+to keep the staging directory (source), keep the install prefix when the build
+fails, locate and CD to the staging source dir, and see the environment for the
+build:
+#+begin_src shell
+spack edit mypackage
+spack install [--verbose] [--keep-stage] [--keep-prefix] PACKAGE_SPEC
+
+spack locate mypackage
+spack cd mypackage
+spack build-env mypackage -- /bin/sh
+spack clean --stage
+#+end_src
+
+
 A working =package.py= file for a CMake package:
 #+begin_src python
 class Repos(CMakePackage):
@@ -182,3 +202,23 @@ class Repos(CMakePackage):
     depends_on("python@3.8:", type="run")
     depends_on("py-pyyaml", type="run")
 #+end_src
+
+* PATCHES
+
+Try not to change patches after having tried things.  If hit with the "could not
+find path for package X with sha SOME-SHA, suggest concretize --force" and doing
+"concretize --force" does nothing, then
+#+begin_src shell
+spack edit X # comment the `patch("filename")` line
+spack concretize --force
+#+end_src
+
+* MISC
+
+If deleting stuff in =${spack}/opt/${arch}=, then the file
+=${spack}/opt/spack/.spack-db/index.json= will cause spack to complain that
+something in =${spack}/opt/${arch}= is missing.  Edit the JSON file to remove
+any reference to what is missing or delete the file altogether.  Deleting the
+file may cause *a lot* of work to be redone.
+
+Try =spack reindex=.
