@@ -2,3 +2,10 @@
 
 A repo of manpages to allow me to quickly access notes on various topics or
 add a manpage for commands that don't have them.
+
+* REFERENCES
+
+- [[https://man7.org/linux/man-pages/man7/man-pages.7.html]] Description of
+  sections and manpage style guide.
+- [[https://linux.die.net/man/1/manpath]] The page where it says "man uses a
+  sophisticated method of finding manual page files".
