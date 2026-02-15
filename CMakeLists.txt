@@ -9,8 +9,8 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
 
-include(orgmanpages)
-orgmanpages_add_man_target()
+include(org_md_manpages)
+org_md_manpages_add_man_target()
 
 configure_file(bin/man-add.in.sh bin/man-add USE_SOURCE_PERMISSIONS @ONLY)
 configure_file(bin/man-edit.in.sh bin/man-edit USE_SOURCE_PERMISSIONS @ONLY)
