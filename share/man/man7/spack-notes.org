@@ -46,7 +46,8 @@ relocalizable.
   for the active environment.
 
 Use =-d DIRECTORY= to create the environment in a different directory.  This
-requires 
+requires specifying the full directory when activating the environment.  Spack
+can also be configured to use a different default directory for environments.
 * ADDING PACKAGES
 
 Assuming an environment has been activated with =spacktivate ENV=, either run
