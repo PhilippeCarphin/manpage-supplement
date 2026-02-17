@@ -8,8 +8,11 @@ bash-completion-notes - notes on BASH completion
 
 Files should go in =$prefix/share/bash-completion/completions= with
 =XDG_DATA_DIRS= containing =$prefix/share= as one of its elements.  The file
-should be named =${command}= where =${command}= is the name of the command it
+should be named =${command}= or =_${command}= where =${command}= is the name of the command it
 provides completion for.
+
+If the completions for multiple commands are defined in one file, then we should make symbolic
+links with the names of each command pointing to that one file.
 
 With version 2.12+ (that use =_comp_load=), the files will be found if
 =$prefix/bin= is in =PATH=.
@@ -25,9 +28,13 @@ Otherwise if =XDG_DATA_HOME= is set, look in =${XDG_DATA_HOME}/bash-completion/c
 
 Otherwise look in =$HOME/.local/share/bash-completion/completions=.
 
+See #1 in the LAZY LOADING code below.
+
 *** Included completions
 
 The subdirectory =completions= of the base directory of =bash-completion=.
+
+See #2 in the LAZY LOADING code below.
 
 *** =PATH=
 
@@ -35,20 +42,34 @@ Only in newer versions that have =_comp_load=.
 
 If the command contains a =/=, use the containing directory and realpath of that directory.
 
-For each directory =$d= in =$PATH=, check =${d%/bin}/share/bash-completion/completions=
+For each directory =$d= in =$PATH=, check =${d%/bin}/share/bash-completion/completions=.
+
+See #3 in the LAZY LOADING code below.
 
 *** =XDG_DATA_DIRS=
 
-For each directory =$d= in =$XDG_DATA_DIRS=, check =${d}/share/bash-completion/completions=
+For each directory =$d= in =$XDG_DATA_DIRS=, check =${d}/share/bash-completion/completions=.
 
-* LAZY LOADING
+See #4 in the LAZY LOADING code below.
+
+* FILE NAMES
+
+The file must be named either
+1. Exactly the name of the command,
+2. The name of the command followed by =.bash=,
+3. The name of the command preceded by an underscore,
+4. The name of the command preceded by an underscore and followed by =.bash= (only in 2.12+),
+(no =*.sh=, and no replacing inner dashes with underscores).
+
+* CODE
 
 ** Directories
 
-The code for =_comp_load= in recent versions and =__load_completion= in earlier
-ones has this (=__load_completion= does not have #3 and treats
-=BASH_COMPLETION_USER_DIR= as a single directory rather than a colon-separated
-list):
+The following is the code of =_comp_load= in recent versions of [[https://github.com/scop/bash-completion][bash-completion]].
+
+Earlier versions have the function =__load_completion= does mostly the same except that
+- it does not have the #3 part
+- treats =BASH_COMPLETION_USER_DIR= as a single directory rather than a colon-separated list.
 
 #+begin_src shell
 # Lookup order:
@@ -106,7 +127,11 @@ done
 which will source the first of these files =${cmdname}=, =${cmdname}.bash=,
 =_${cmdname}=, =_${cmdname}.bash= to be found in one of the elements of =dirs=.
 
-* Adding completions
+* Adding completions to the =bash-completion= repo
+
+This is not something we should do unless we want to actually submit a merge request.  Better to provide them with our package in =<prefix>/share/bash-completion/completions= and add =<prefix>= to =XDG_DATA_DIRS=.
+
+But since I did spend the time to figure it out, might as well remember it here.
 
 - Add =completions/_<CMD>= where =<CMD>= is the name of the command that should
   be completed.
