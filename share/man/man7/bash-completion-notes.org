@@ -39,7 +39,7 @@ For each directory =$d= in =$PATH=, check =${d%/bin}/share/bash-completion/compl
 
 *** =XDG_DATA_DIRS=
 
-For each directory =$d= in =$XDG_DATA_DIRS=, check =${d%/bin}/share/bash-completion/completions=
+For each directory =$d= in =$XDG_DATA_DIRS=, check =${d}/share/bash-completion/completions=
 
 * LAZY LOADING
 
