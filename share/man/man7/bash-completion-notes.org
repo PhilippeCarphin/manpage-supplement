@@ -15,7 +15,9 @@ If the completions for multiple commands are defined in one file, then we should
 links with the names of each command pointing to that one file.
 
 With version 2.12+ (that use =_comp_load=), the files will be found if
-=$prefix/bin= is in =PATH=.
+=$prefix/bin= is in =PATH=.  This means we would put the files in the same
+location but we would not need to add =$prefix/share= to =XDG_DATA_DIRS= as long
+as we are adding =$prefix/bin= to the =PATH= which we are probably already doing.
 
 ** Lookup summary
 
