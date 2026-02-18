@@ -4,51 +4,117 @@
 
 bash-completion-notes - notes on BASH completion
 
-* FILE LOCATION
+* AUTOMATIC LOADING
 
-Files should go in =$prefix/share/bash-completion/completions= with
-=XDG_DATA_DIRS= containing =$prefix/share= as one of its elements.  The file
-should be named =${command}= where =${command}= is the name of the command it
-provides completion for.
+When a user presses TAB to trigger completion for a command that does not have a
+completion spec the function =_completion_loader= is called which will attempt
+to find a file defining a completion for said command.
 
-With version 2.12+ (that use =_comp_load=), the files will be found if
-=$prefix/bin= is in =PATH=.
+The function will look in a set of directories for a file defining a completion
+spec for command, source said file and reattempt completion.
+
+This way a package can provide completions without requiring users to source a
+file in their dot files.
+
+** For a package
+
+For a package installed in =<prefix>=, completion files should be placed in
+=<prefix>/share/bash-completion/completions= and have the same name as the
+command they will define a completion for.
+
+Loading the package should add =<prefix>/share= to the colon-separated list
+=XDG_DATA_DIRS=.
+
+If =bash-completion= version 2.12+ is used, then it is sufficient to add
+=<prefix>/bin= to the =PATH=.
+
+** Third party completions
+
+If defining a completion for a command that is not yours, place completion files in
+=$HOME/.local/share/bash-completion/completions= (see the first subsection of
+Lookup Summary below).
+
+Files must also have the same name as the command they define a completion for.
 
 ** Lookup summary
 
-*** =BASH_COMPLETION_USER_DIR=, =XDG_DATA_HOME=, =$HOME/.local/share=
+The function =_completion_loader= (deprecated in 2.12 in favor of =_comp_complete_load=)
+constructs a list of directories to search in four ways.
 
-If =BASH_COMPLETION_USER_DIR= is set, look in =$d/bash-completion/completions=
-for d in the colon-separated list.
+*** User locations
 
-Otherwise if =XDG_DATA_HOME= is set, look in =${XDG_DATA_HOME}/bash-completion/completions=
+Include =$d/bash-completion/completions= where =d= is the first of
+- =$BASH_COMPLETION_USER_DIR=
+- =$XDG_DATA_HOME=
+- =$HOME/.local/share=
+to have a non-empty value (the last one will always have a non-empty value).
 
-Otherwise look in =$HOME/.local/share/bash-completion/completions=.
-
-*** Included completions
+*** Completions provided by =bash-completion= itself
 
 The subdirectory =completions= of the base directory of =bash-completion=.
 
-*** =PATH=
+*** Directories obtained from PATH or the location of the command itself
 
-Only in newer versions that have =_comp_load=.
+In versions 2.12+ include =$d/share/bash-completion/completions= for each =d= in
+- the dirname of the command if command contains a =/=,
+- the realpath of the dirname of the command if command contains a =/=
+- the directories of =$PATH=
+- the directories of =$PATH= with =/bin= stripped from the end.
 
-If the command contains a =/=, use the containing directory and realpath of that directory.
+*** ~XDG_DATA_HOME~
 
-For each directory =$d= in =$PATH=, check =${d%/bin}/share/bash-completion/completions=
+Include =${d}/share/bash-completion/completions= for each =$d= in the colon
+delimited list =$XDG_DATA_DIRS=.
 
-*** =XDG_DATA_DIRS=
+** File Names
+The file must be named either
+1. Exactly the name of the command,
+2. The name of the command followed by =.bash=,
+3. The name of the command preceded by an underscore,
+4. The name of the command preceded by an underscore and followed by =.bash= (only in 2.12+),
+(no =*.sh=, and no replacing inner dashes with underscores).
 
-For each directory =$d= in =$XDG_DATA_DIRS=, check =${d}/share/bash-completion/completions=
+If the same file defines completions for multiple commands, then create a
+symbolic link for each of these commands pointing to that file.
 
-* LAZY LOADING
+
+* GIT
+
+We can define lazy loaded completions for our git aliases and git commands.
+
+** Files named =git-my-command=
+When we request completions for =git my-command=, the completion function for
+git will
+- Attempt to call the shell function =_git_my_command= if it is defined,
+- Call =_completion_loader git-my-command= which will look for a file named
+  =[_]git-my-command[.bash= in the directories described above and should define
+  the shell function =_git_my_command=.
+- Reattempt to call the shell function =_git_my_command=.
+
+Note that no completion specs need to be set for this, the file need only define
+a shell function with the proper name that the completion spec for the command
+=git= will call.
+
+** Aliases
+For git aliases, git will split the alias definition into words and use the
+first word that is not one of the words to skip in =__git_aliased_command=.
+
+The following aliases will both be completed the same way as =git ls-files=:
+#+begin_src shell
+[alias]
+    x = ls-files
+    y = "!f(){ : git ls-files ; git ... ; } ; f"
+#+end_src
+
+* CODE
 
 ** Directories
 
-The code for =_comp_load= in recent versions and =__load_completion= in earlier
-ones has this (=__load_completion= does not have #3 and treats
-=BASH_COMPLETION_USER_DIR= as a single directory rather than a colon-separated
-list):
+The following is the code of =_comp_load= in recent versions of [[https://github.com/scop/bash-completion][bash-completion]].
+
+Earlier versions have the function =__load_completion= does mostly the same except that
+- it does not have the #3 part
+- treats =BASH_COMPLETION_USER_DIR= as a single directory rather than a colon-separated list.
 
 #+begin_src shell
 # Lookup order:
@@ -106,7 +172,35 @@ done
 which will source the first of these files =${cmdname}=, =${cmdname}.bash=,
 =_${cmdname}=, =_${cmdname}.bash= to be found in one of the elements of =dirs=.
 
-* Adding completions
+** Git
+#+begin_src shell
+__git_complete_command () {
+	local command="$1"
+	local completion_func="_git_${command//-/_}"
+	if ! __git_have_func $completion_func &&
+		__git_have_func _completion_loader
+	then
+		_completion_loader "git-$command"
+	fi
+	if __git_have_func $completion_func
+	then
+		$completion_func
+		return 0
+	elif __git_support_parseopt_helper "$command"
+	then
+		__git_complete_common "$command"
+		return 0
+	else
+		return 1
+	fi
+}
+#+end_src
+
+* Adding completions to the =bash-completion= repo
+
+This is not something we should do unless we want to actually submit a merge request.  Better to provide them with our package in =<prefix>/share/bash-completion/completions= and add =<prefix>= to =XDG_DATA_DIRS=.
+
+But since I did spend the time to figure it out, might as well remember it here.
 
 - Add =completions/_<CMD>= where =<CMD>= is the name of the command that should
   be completed.
@@ -118,4 +212,3 @@ which will source the first of these files =${cmdname}=, =${cmdname}.bash=,
 
 - Run =update-test-cmd-list=.  This adds a line in =test/t/Makefile.am= and
   in =test/test-cmd-list.txt=.
-
