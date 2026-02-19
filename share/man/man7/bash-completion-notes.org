@@ -174,6 +174,19 @@ which will source the first of these files =${cmdname}=, =${cmdname}.bash=,
 
 ** Git
 #+begin_src shell
+__git_main ()
+{
+	# [...]
+
+	__git_complete_command "$command" && return
+
+	local expansion=$(__git_aliased_command "$command")
+	if [ -n "$expansion" ]; then
+		words[1]=$expansion
+		__git_complete_command "$expansion"
+	fi
+}
+
 __git_complete_command () {
 	local command="$1"
 	local completion_func="_git_${command//-/_}"
@@ -192,6 +205,47 @@ __git_complete_command () {
 		return 0
 	else
 		return 1
+	fi
+}
+__git_aliased_command ()
+{
+	local cur=$1 last list= word cmdline
+
+	while [[ -n "$cur" ]]; do
+		if [[ "$list" == *" $cur "* ]]; then
+			# loop detected
+			return
+		fi
+
+		cmdline=$(__git config --get "alias.$cur")
+		list=" $cur $list"
+		last=$cur
+		cur=
+
+		for word in $cmdline; do
+			case "$word" in
+			\!gitk|gitk)
+				cur="gitk"
+				break
+				;;
+			\!*)	: shell command alias ;;
+			-*)	: option ;;
+			*=*)	: setting env ;;
+			git)	: git itself ;;
+			\(\))   : skip parens of shell function definition ;;
+			{)	: skip start of shell helper function ;;
+			:)	: skip null command ;;
+			\'*)	: skip opening quote after sh -c ;;
+			*)
+				cur="${word%;}"
+				break
+			esac
+		done
+	done
+
+	cur=$last
+	if [[ "$cur" != "$1" ]]; then
+		echo "$cur"
 	fi
 }
 #+end_src
