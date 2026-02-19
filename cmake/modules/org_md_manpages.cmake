@@ -32,14 +32,16 @@ macro(org_md_manpages_add_man_target)
         set(file ${CMAKE_SOURCE_DIR}/${rel_file})
 
         string(REGEX REPLACE ".*.(org\|md)$" "\\1" extension ${rel_file})
-        string(REGEX REPLACE ".${extension}$" ".${man_section_number}" target_base ${base})
         if(${extension} STREQUAL md)
             set(heading_shift --shift-heading-level-by=-1)
+        else()
+            unset(heading_shift)
         endif()
 
         # Replace "my-command.(org|md)" with "my-command.<i>" based on the directory
         # containing the source file (share/man/man<i>).
         string(REGEX REPLACE ".*man([1-9]).*" "\\1" man_section_number "${rel_file}")
+        string(REGEX REPLACE ".${extension}$" ".${man_section_number}" target_base ${base})
 
         set(target_file ${target_dir}/${target_base})
 
