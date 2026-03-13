@@ -63,8 +63,8 @@ The elements of =MANPATH= are expected to contain numbered subdirectories
 
 * FILES
 
-and the files in those directories are expected to end with =.n= where =n= is
-the section number.
+The files in those directories described in SECTIONS are expected to end with
+=.n= where =n= is the section number.
 
 The simplest way to create these files is to use a markup language like
 Markdown or Org and to use pandoc to translate to TROFF format.
@@ -80,8 +80,6 @@ To take a directory, one could do
 #+begin_src
 source_dir=$PWD/share
 install_dir=$PWD/install-dir
-mkdir -p ${install_dir}
-mkdir -p ${install_dir}/share
 for d in ${source_dir}/man/man* ; do
     section_number=${d##*man/man}
     mkdir -p ${install_dir}/share/man/man${section_number}
