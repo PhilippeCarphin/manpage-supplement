@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+_man_edit(){
+    manpage_supplement_dir=@CMAKE_SOURCE_DIR@
+    if [[ ${BASH_SOURCE[0]} == *.in ]] ; then
+        manpage_supplement_dir=$(cd -P $(dirname ${BASH_SOURCE[0]})/../../.. && pwd)
+    fi
+
+    # We know for sure that there are man-pages in this repo so the nullglob
+    # option is not necessary but as a matter of consistency, I still set it
+    # whenever I use a glob in a for loop.
+    local reset_nullglob=$(shopt -p nullglob)
+    shopt -s nullglob
+
+    local cur=${COMP_WORDS[COMP_CWORD]}
+    for f in ${manpage_supplement_dir}/share/man/man*/* ; do
+        name=${f##*/}
+        if [[ ${name} == ${cur}* ]] ; then
+            COMPREPLY+=("${name%.org}")
+        fi
+    done
+    ${reset_nullglob}
+}
+complete -F _man_edit man-edit

@@ -21,3 +21,5 @@ install(
     DESTINATION bin
 )
 install(PROGRAMS bin/man-super-edit.sh DESTINATION bin RENAME man-super-edit)
+configure_file(share/bash-completion/completions/man-edit.in share/bash-completion/completions/man-edit USE_SOURCE_PERMISSIONS @ONLY)
+install(FILES ${CMAKE_BINARY_DIR}/share/bash-completion/completions/man-edit DESTINATION share/bash-completion/completions)
