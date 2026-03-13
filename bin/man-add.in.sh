@@ -30,21 +30,21 @@ main(){
         done
     fi
 
-    manpages=($(find ${src_dir}/share/man/man${new_section} -name "*$new_name*"))
+    manpages=($(find ${src_dir}/share/man/man${new_section} -name "*$new_name*" 2>/dev/null))
     if ((${#manpages[@]})) ; then
         printf "%s: ERROR: A manpage already exists in section %d of manpage-supplement with the name %s\n" \
             "${0##*/}" "${new_section}" "${new_name}"
         exit 1
     fi
 
-    manpages=($(man -wa ${new_section} ${new_name}))
+    manpages=($(man -wa ${new_section} ${new_name} 2>/dev/null || true))
     if ((${#manpages[@]})) ; then
         printf "${0##*/}: ERROR: A manpage already exists outside of manpage-supplement with the same name and section: %s\n" \
             "${manpages[*]}"
         exit 1
     fi
 
-    manpages=($(man -wa ${new_name}))
+    manpages=($(man -wa ${new_name} 2>/dev/null || true))
     if ((${#manpages[@]})) ; then
         printf "${0##*/}: WARNING: A manpage already exists outside of manpage-supplement with the same name but different section: %s\n" \
             "${manpages[*]}"
