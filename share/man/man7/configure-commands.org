@@ -32,6 +32,10 @@ the error was at linking: =ld: Could not find -ltinfo=.
 
 NOTE: Redoing it with =--with-ssl= after doing it without doesn't work.
 
+* VIM
+#+begin_src shell
+./configure --enable-python3interp=dynamic
+#+end_src
 * AUTHORS
 
 Philippe Carphin
