@@ -4,7 +4,6 @@
 
 man-extras - Extras on manpages
 
-
 * MANPATH MAP
 
 A mapping that =man= applies when looking for manpages.  This means that

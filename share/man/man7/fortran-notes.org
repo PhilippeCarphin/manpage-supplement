@@ -10,6 +10,9 @@ fortran-notes - Stuff that I keep forgetting about Fortran
 program main
   <use statements>
   implicit none
+  interface
+     <interfaces>
+  end interface
   <variable declaration>
   <some code>
   contains
@@ -20,9 +23,12 @@ end program
 - The order is important:
   - =use= statements
   - =implicit none=
+  - interface section (it can also be after the variable mixed in with or after
+    the variable declarations)
   - Variable declarations
   - Runnable code (all variables need to be declared before any runnable
     code).
+  - contains section (has to be at the end because there is no =end contains=)
 
 * MODULES
 
@@ -30,6 +36,9 @@ end program
 module my_mod
   <use statements>
   implicit none
+  interface
+     <interfaces>
+  end interface
   <module variables and stuff>
   contains
     <module functions and subroutines>
@@ -44,6 +53,7 @@ end module
 A single-file program can include modules for quick testing:
 #+begin_src f90
 module my_mod
+  <use statements>
   implicit none
   <module variables and stuff>
   contains
@@ -51,8 +61,8 @@ module my_mod
 end module
 
 program main
-  implicit none
   use my_mod
+  implicit none
   some code
   contains
     <functions and subroutines go here>
