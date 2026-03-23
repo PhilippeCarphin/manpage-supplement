@@ -61,7 +61,7 @@ In versions 2.12+ include =$d/share/bash-completion/completions= for each =d= in
 - the directories of =$PATH=
 - the directories of =$PATH= with =/bin= stripped from the end.
 
-*** ~XDG_DATA_HOME~
+*** ~XDG_DATA_DIRS~
 
 Include =${d}/share/bash-completion/completions= for each =$d= in the colon
 delimited list =$XDG_DATA_DIRS=.
