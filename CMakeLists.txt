@@ -14,6 +14,7 @@ org_md_manpages_add_man_target()
 
 configure_file(bin/man-add.in.sh bin/man-add USE_SOURCE_PERMISSIONS @ONLY)
 configure_file(bin/man-edit.in.sh bin/man-edit USE_SOURCE_PERMISSIONS @ONLY)
+configure_file(modulefile.in manpage-supplement @ONLY)
 install(
     PROGRAMS
         ${CMAKE_BINARY_DIR}/bin/man-add
@@ -21,5 +22,7 @@ install(
     DESTINATION bin
 )
 install(PROGRAMS bin/man-super-edit.sh DESTINATION bin RENAME man-super-edit)
+
 configure_file(share/bash-completion/completions/man-edit.in share/bash-completion/completions/man-edit USE_SOURCE_PERMISSIONS @ONLY)
 install(FILES ${CMAKE_BINARY_DIR}/share/bash-completion/completions/man-edit DESTINATION share/bash-completion/completions)
+install(FILES ${CMAKE_BINARY_DIR}/manpage-supplement DESTINATION share/modulefiles)
