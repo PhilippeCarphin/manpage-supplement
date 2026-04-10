@@ -1,0 +1,36 @@
+#+TITLE:git-my-notes
+
+* NAME
+
+git-my-notes - Quick reminders for git
+
+* SYNOPSIS
+
+#+begin_src shell
+git bisect start
+git bisect bad [REF]
+git bisect good [REF]
+
+git rebase --onto NEWBASE RANGE_START RANGE_END
+#+end_src
+
+* DESCRIPTION
+
+** Bisect
+
+Use =git bisect start= to initiate a bisection then mark one commit as good and
+one commit as bad then git will checkout commits for us which we mark as good or
+bad until git tells us "this is the commit that makes it go from good to bad".
+
+** Rebase onto
+
+Rebase the range =RANGE_START= to =RANGE_END= (*excluding* =RANGE_START=) onto
+=NEWBASE=.
+
+* AUTHORS
+
+Philippe Carphin
+
+* SEE ALSO
+
+git help bisect
