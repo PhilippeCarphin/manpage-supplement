@@ -1,0 +1,19 @@
+#%Module
+
+set VERSION "1.0.0"
+proc ModulesHelp {} {
+    puts stderr "manpage-supplement is a set of manpages for quick reference.  These pages can also be viewed at https://github.com/philippecarphin/manpage-supplement"
+}
+module-whatis "manpage-supplement is a set of manpages for quick reference"
+
+proc checkManPath {} {
+    set manpath $::env(MANPATH)
+    if { [string match "" $manpath] || [string match ":*" $manpath] || [string match "*::*" $manpath] || [string match "*:" $manpath] } {
+    } else {
+        prepend-path MANPATH ":"
+    }
+}
+
+checkManPath
+prepend-path PATH          @CMAKE_INSTALL_PREFIX@/bin
+prepend-path XDG_DATA_DIRS @CMAKE_INSTALL_PREFIX@/share
