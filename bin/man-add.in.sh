@@ -57,11 +57,18 @@ main(){
 
     ${EDITOR:-vim} ${new_page}
 
-    cmake -S "${src_dir}" -B "${bin_dir}"
-    cmake --build "${bin_dir}"
-    cmake --install "${bin_dir}"
-    quickstow -R ${src_dir##*/}
+    printf "${0##*/}: New manpage created: %s\n", "${new_page}"
+    printf "${0##*/}: Do you rebuild and reinstall? [y/n] > "
+    read answer
+    case ${answer} in
+        y*|Y*) cmake -S "${src_dir}" -B "${bin_dir}"
+               cmake --build "${bin_dir}"
+               cmake --install "${bin_dir}"
+               quickstow -R ${src_dir##*/}
+               break ;;
+    esac
 }
+
 sections=(
     "1   Executable programs or shell commands"
     "2   System calls (functions provided by the kernel)"
