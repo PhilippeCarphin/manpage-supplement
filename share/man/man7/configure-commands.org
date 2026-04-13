@@ -45,6 +45,11 @@ NOTE: Redoing it with =--with-ssl= after doing it without doesn't work.
 ./configure --enable-python3interp=dynamic
 #+end_src
 
+This is by looking at what spack does.  At work I had to comment out a part of
+the configure script that adds =-Wl,--as-needed= to =LD_FLAGS=.  Otherwise the
+final executable didn't have =libpython3.so= in the =ldd= output and at runtime
+vim would not load plugins that needed things from =libpython3.so=.
+
 * BASH
 
 For =C-l= to clear the screen as it should, BASH needs to be compiled with
