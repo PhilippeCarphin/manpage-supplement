@@ -1,4 +1,4 @@
-#+TITLE:manpage-template
+#+TITLE:bash-completion-notes
 
 * NAME
 
@@ -36,12 +36,20 @@ Lookup Summary below).
 
 Files must also have the same name as the command they define a completion for.
 
-** Lookup summary
+* LOOKUP SUMMARY
 
 The function =_completion_loader= (deprecated in 2.12 in favor of =_comp_complete_load=)
-constructs a list of directories to search in four ways.
+looks for files whose name matches
 
-*** User locations
+1. Exactly the name of the command,
+2. The name of the command followed by =.bash=,
+3. The name of the command preceded by an underscore,
+4. The name of the command preceded by an underscore and followed by =.bash= (only in 2.12+),
+
+in a list of directories formed of the following four groups (see CODE below
+for code references):
+
+** User locations
 
 Include =$d/bash-completion/completions= where =d= is the first of
 - =$BASH_COMPLETION_USER_DIR=
@@ -49,11 +57,11 @@ Include =$d/bash-completion/completions= where =d= is the first of
 - =$HOME/.local/share=
 to have a non-empty value (the last one will always have a non-empty value).
 
-*** Completions provided by =bash-completion= itself
+** Completions provided by =bash-completion= itself
 
 The subdirectory =completions= of the base directory of =bash-completion=.
 
-*** Directories obtained from PATH or the location of the command itself
+** Directories obtained from PATH or the location of the command itself
 
 In versions 2.12+ include =$d/share/bash-completion/completions= for each =d= in
 - the dirname of the command if command contains a =/=,
@@ -61,50 +69,55 @@ In versions 2.12+ include =$d/share/bash-completion/completions= for each =d= in
 - the directories of =$PATH=
 - the directories of =$PATH= with =/bin= stripped from the end.
 
-*** ~XDG_DATA_DIRS~
+** ~XDG_DATA_DIRS~
 
 Include =${d}/share/bash-completion/completions= for each =$d= in the colon
 delimited list =$XDG_DATA_DIRS=.
-
-** File Names
-The file must be named either
-1. Exactly the name of the command,
-2. The name of the command followed by =.bash=,
-3. The name of the command preceded by an underscore,
-4. The name of the command preceded by an underscore and followed by =.bash= (only in 2.12+),
-(no =*.sh=, and no replacing inner dashes with underscores).
-
-If the same file defines completions for multiple commands, then create a
-symbolic link for each of these commands pointing to that file.
-
 
 * GIT
 
 We can define lazy loaded completions for our git aliases and git commands.
 
 ** Files named =git-my-command=
+
 When we request completions for =git my-command=, the completion function for
 git will
+- Call the appropriate completion sub-function if it exitsts (for example,
+  =git commit= will be completed by code in =git-completion.bash=,
 - Attempt to call the shell function =_git_my_command= if it is defined,
 - Call =_completion_loader git-my-command= which will look for a file named
-  =[_]git-my-command[.bash= in the directories described above and should define
-  the shell function =_git_my_command=.
+  =[_]git-my-command[.bash]= in the directories described above and should
+  define the shell function =_git_my_command=.
 - Reattempt to call the shell function =_git_my_command=.
 
-Note that no completion specs need to be set for this, the file need only define
-a shell function with the proper name that the completion spec for the command
-=git= will call.
+Note that in this case, we have less freedom in how we write our file.
+
+In the general case, lazy loading looks for a file which is expected to
+define a compspec for =COMMAND=.  This compspec can set any function as the
+completion function for =COMMAND=.
+
+On the other hand, although =git= completion uses =bash-completion= to find
+and source a file defining a completion for =git-my-command=, after this
+happens, it directly attemps to call a function named =_git_my_command=.
+
+Also note that the name of the function has any dashes in the command name
+replaced by underscores (see *Git* subsection of *CODE* below).
 
 ** Aliases
 For git aliases, git will split the alias definition into words and use the
-first word that is not one of the words to skip in =__git_aliased_command=.
+first word that is not one of the words to skip in =__git_aliased_command=:
 
-The following aliases will both be completed the same way as =git ls-files=:
+In both of the following cases, it will skip everything until the =ls-files=
 #+begin_src shell
 [alias]
     x = ls-files
     y = "!f(){ : git ls-files ; git ... ; } ; f"
 #+end_src
+therefore =git x ...= and =git y ...= will have the same completion as =git
+ls-files=.
+
+Note that =ls-files= could also not be a builtin command and in that case,
+the procedure described in *Files named =git-my-command=* will also be done.
 
 * CODE
 
