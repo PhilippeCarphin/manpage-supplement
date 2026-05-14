@@ -12,6 +12,18 @@ git bisect bad [REF]
 git bisect good [REF]
 
 git rebase --onto NEWBASE RANGE_START RANGE_END
+git rebase -i RANGE -x COMMAND
+git rebase -i RANGE --update-refs
+git rebase --edit-todo
+
+# Show full function context
+git log [-W|--function-context]
+
+# Use message from another commit
+git commit [-C|--reuse-message COMMIT]
+
+# Compare just two commits using range-diff
+git range-diff COMMITA^! COMMITB^!
 #+end_src
 
 * DESCRIPTION
@@ -27,9 +39,25 @@ bad until git tells us "this is the commit that makes it go from good to bad".
 Rebase the range =RANGE_START= to =RANGE_END= (*excluding* =RANGE_START=) onto
 =NEWBASE=.
 
+** Rebase
+
+*** =-x COMMAND=
+
+Run =COMMAND= after every commit while rebasing
+
+*** =--update-refs=
+
+Update any refs pointing to commits that we are redoing.  We still might to
+force push them though.
+
+*** =--edit-todo=
+
+Edit the =rebase-todo.txt= while rebasing.  Note we can even add random commits
+to cherry-pick.
+
 * AUTHORS
 
-Philippe Carphin
+Philippe Carphin (but most of the tricks here I learned from Philippe Blain)
 
 * SEE ALSO
 
