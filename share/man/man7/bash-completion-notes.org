@@ -68,13 +68,14 @@ In versions 2.12+ include =$d/share/bash-completion/completions= for each
 - the dirname of the command if command contains a =/=,
 - the dirname of the realpath of command if command contains a =/=
 - =${d%/*}/share/bash-completion/completions= for all =$d= in =PATH= that
-  end with =/bin= or =/sbin=.
+  end with =/bin= or =/sbin= (~d=$prefix/bin~ becomes
+  =$prefix/share/bash-completion/completions=).
 
 The first two mean that if an executable is called with a relative path or an 
 absolute path, then bash completion will look in the same directory as the one
 containing the executable.
 
-Note also that directories in `PATH` that do not end in =/bin= or =/sbin= are
+Note also that directories in =PATH= that do not end in =/bin= or =/sbin= are
 not considered at all.
 
 ** ~XDG_DATA_DIRS~
