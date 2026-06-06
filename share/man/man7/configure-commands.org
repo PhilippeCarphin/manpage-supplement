@@ -6,16 +6,18 @@ configure-commands - configure commands for various programs
 
 * TIPS
 
-When a =./configure= says it found something but it doesn't work because it
-wasn't able to build a test program with it, go look at the logs.  That test
-program may be using a specific feature that needs to be activated.  See
-NCURSES.
+- When a =./configure= says it found something but it doesn't work because it
+  wasn't able to build a test program with it, go look at the logs.  That test
+  program may be using a specific feature that needs to be activated.  See
+  NCURSES.
 
-Look at what Spack does with =spack edit PACKAGE=
+- Look at what Spack does with =spack edit PACKAGE=.  The spack package files
+  encode knowledge from people who know the right arguments for =./configure=
+  for various situations and how to activate various features correctly.
 
-When a configure command fails, it will suggest to look at =config.log=.
-This is where the output of a compilation test can be found.  They don't all
-succeed, so the first failed one is not necessarily the one we want.
+- When a configure command fails, it will suggest to look at =config.log=.
+  This is where the output of a compilation test can be found.  They don't all
+  succeed, so the first failed one is not necessarily the one we want.
 
 * NCURSES
 
