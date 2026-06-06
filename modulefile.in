@@ -1,19 +1,31 @@
 #%Module
-
+#
 set VERSION "1.0.0"
 proc ModulesHelp {} {
     puts stderr "manpage-supplement is a set of manpages for quick reference.  These pages can also be viewed at https://github.com/philippecarphin/manpage-supplement"
+    puts -nonewline stderr "Provided manpages:"
+    puts stderr [regsub -all "^\|;" "@ORG_MD_MANPAGES_LIST@" "\n- "]
 }
 module-whatis "manpage-supplement is a set of manpages for quick reference"
 
-proc checkManPath {} {
+proc makeManpagesAvailable {} {
+    # See 'MANPATH MAP' section of `man man-extras`
+    # (https://github.com/philippecarphin/manpage-supplement/blob/main/share/man/man7/man-extras.org)
+    # Ensure the environment variable MANPATH is
+    # - unset (the preferred situation since setting MANPATH overrides the
+    #   normal manpage search
+    # - Has a leading colon, trailing colon, or double-colon (this ensures that
+    #   although MANPATH is set `man` will still do its normal search).
+    # All we want is to ensure that `man` does its normal search procedure.
     set manpath $::env(MANPATH)
     if { [string match "" $manpath] || [string match ":*" $manpath] || [string match "*::*" $manpath] || [string match "*:" $manpath] } {
     } else {
         prepend-path MANPATH ":"
     }
 }
+makeManpagesAvailable
 
-checkManPath
+# Make programs and manpages available
 prepend-path PATH          @CMAKE_INSTALL_PREFIX@/bin
+# Make lazy-loaded autocompletes available
 prepend-path XDG_DATA_DIRS @CMAKE_INSTALL_PREFIX@/share

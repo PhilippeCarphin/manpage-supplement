@@ -19,6 +19,7 @@ macro(org_md_manpages_add_man_target)
         share/man/*.org
         share/man/*.md
     )
+    set(ORG_MD_MANPAGES_LIST)
 
     foreach(rel_file ${org_files})
         # rel_file = share/man/man1/my-command.org
@@ -42,6 +43,9 @@ macro(org_md_manpages_add_man_target)
         # containing the source file (share/man/man<i>).
         string(REGEX REPLACE ".*man([1-9]).*" "\\1" man_section_number "${rel_file}")
         string(REGEX REPLACE ".${extension}$" ".${man_section_number}" target_base ${base})
+
+        string(REGEX REPLACE ".*/man[1-9]/(.*).${extension}$" "\\1" page_name "${rel_file}")
+        list(APPEND ORG_MD_MANPAGES_LIST "${page_name}")
 
         set(target_file ${target_dir}/${target_base})
 

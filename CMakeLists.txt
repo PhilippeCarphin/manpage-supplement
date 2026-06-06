@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.16)
 
 project(listings-monitor)
 
+set(MODULE_DESTINATION share/modulefiles CACHE PATH "Install destination for module files (default: share/modulefiles")
+
 if("${CMAKE_INSTALL_PREFIX}" STREQUAL "/usr/local")
     set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/localinstall CACHE FILEPATH "CMake Installation prefix for ${PROJECT_NAME}" FORCE)
     message(STATUS "Setting CMAKE_INSTALL_PREFIX to ${CMAKE_INSTALL_PREFIX}")
@@ -25,4 +27,4 @@ install(PROGRAMS bin/man-super-edit.sh DESTINATION bin RENAME man-super-edit)
 
 configure_file(share/bash-completion/completions/man-edit.in share/bash-completion/completions/man-edit USE_SOURCE_PERMISSIONS @ONLY)
 install(FILES ${CMAKE_BINARY_DIR}/share/bash-completion/completions/man-edit DESTINATION share/bash-completion/completions)
-install(FILES ${CMAKE_BINARY_DIR}/manpage-supplement DESTINATION share/modulefiles)
+install(FILES ${CMAKE_BINARY_DIR}/manpage-supplement DESTINATION ${MODULE_DESTINATION})
