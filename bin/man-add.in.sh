@@ -65,7 +65,7 @@ main(){
                cmake --build "${bin_dir}"
                cmake --install "${bin_dir}"
                quickstow -R ${src_dir##*/}
-               break ;;
+               ;;
     esac
 }
 
