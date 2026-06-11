@@ -1,0 +1,46 @@
+#+TITLE:pixi-notes
+
+* NAME
+
+Notes on pixi
+
+* SYNOPSIS
+
+#+begin_src shell
+pixi init DIRECTORY
+pixi shell
+pixi shell-hook
+#+end_src
+
+* DESCRIPTION
+
+** =pixi init DIRECTORY=
+
+Create an empty =pixi= project.  It just creates the directory and places a
+=pixi.toml= in it.
+
+** =pixi shell-hook=
+
+Outputs shell code to setup the environment.  Running =eval "$(pixi shell-hook)"=
+would load the environment without messing with one's PS1.
+
+** =pixi shell=
+
+Starts a shell with the project's environment.
+
+
+* ENVIRONMENTS
+
+The following sections of =pixi.toml= can set particular environment variables
+and even source particular scripts:
+- =[activation.env]= can contain environment variables to set.
+- =[target.unix.activation]= can contain scripts to source.
+like so:
+
+#+begin_src toml
+[activation.env]
+VARIABLE = "Variable value"
+
+[target.unix.activation]
+scripts = ["setup.sh"]
+#+end_src

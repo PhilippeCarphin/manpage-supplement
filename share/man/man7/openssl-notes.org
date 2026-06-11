@@ -1,0 +1,26 @@
+#+TITLE:openssl-notes
+
+* NAME
+
+openssl-notes - Some notes about openssl commands
+
+* SYNOPSIS
+
+#+begin_src shell
+# Print info on certificate
+openssl x509 -noout -in FILE.pem -text
+while openssl x509 -noout -text ; do : ; done < FILE.pem
+
+# Make certificate signing request
+openssl req -new -newkey rsa:2048 -nodes -keyout KEY_FILE -out REQUEST_FILE
+
+# Decode certificate signing request
+openssl req -noout -in FILE.crt -text
+#+end_src
+
+* NOTES
+
+- The =while= command to print info on certificates is for when a =.pem= file
+  contains multiple certificates.  Apparently the single command would just
+  print info on the first certificate (see
+  https://unix.stackexchange.com/a/696244/161630).
