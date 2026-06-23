@@ -7,7 +7,7 @@ Notes on pixi
 * SYNOPSIS
 
 #+begin_src shell
-pixi init DIRECTORY
+pixi init [DIRECTORY]
 pixi shell
 pixi shell-hook
 #+end_src
@@ -17,7 +17,7 @@ pixi shell-hook
 ** =pixi init DIRECTORY=
 
 Create an empty =pixi= project.  It just creates the directory and places a
-=pixi.toml= in it.
+=pixi.toml= in it.  Not specifying the directory is like using PWD.
 
 ** =pixi shell-hook=
 
