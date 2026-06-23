@@ -13,10 +13,46 @@ while openssl x509 -noout -text ; do : ; done < FILE.pem
 
 # Make certificate signing request
 openssl req -new -newkey rsa:2048 -nodes -keyout KEY_FILE -out REQUEST_FILE
+openssl req -new -newkey rsa:2048 -nodes -keyout KEY_FILE -out REQUEST_FILE -addext "subjectAltName = DNS:www.philippe-carphin.ca,DNS:example.philippe-carphin.ca"
+openssl req -new -config CONFIG_FILE -keyout KEY_FILE -out CSR_FILE
 
 # Decode certificate signing request
 openssl req -noout -in FILE.crt -text
 #+end_src
+
+* CONFIG FILE
+
+Using a config file can speed up generation of certificate signing requests (and
+probably other =openssl= subcommands).
+
+#+begin_src conf
+[ req ]
+default_bits = 2048
+encrypt_key = no
+default_md = sha256
+utf8 = yes
+string_mask = utf8only
+prompt = no
+distinguished_name = req_distinguished_name
+req_extensions = req_ext
+
+[ req_distinguished_name ]
+countryName = CA
+stateOrProvinceName = Quebec
+localityName = DDO
+organizationName = Philippe Carphin INC.
+organizationalUnitName = Research and development division
+commonName = philippe-carphin.ca
+
+[ req_ext ]
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = www.philippe-carphin.ca
+DNS.2 = www.example.philippe-carphin.ca
+#+end_src
+
+Credit: [[https://www.noip.com/support/knowledgebase/creating-subject-alternative-name-san-certificate][noip.com : Creating Subject Alternative Name (SAN) Certificate]]
 
 * NOTES
 
