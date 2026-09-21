@@ -1,4 +1,4 @@
-#+TITLE:tmux-notes
+* #+TITLE:tmux-notes
 
 * NAME
 
@@ -18,6 +18,19 @@ tmux-notes - Notes on TMUX
   to each other horizontally.
 * GETTING VALUES
 
+** Options
+
 In general, =tmux show= but we need to know what scope the thing we want to
 see is in.  For example:
 - =default-command=: =tmux show -g default-command=
+
+** Variables
+
+The list of variables is available in the *FORMAT* section of =man tmux= but
+if I want the value of some variable like "where is the socket for this tmux
+session?", then I can use =display-message= to see it:
+
+- =tmux display-message -p '#{VARIABLE_NAME}'= where =VARIABLE_NAME= is the name
+  of a TMUX variable.  The =-p= makes the message appear on STDOUT of the
+  shell running the command instead of in the message area of the TMUX
+  client.
