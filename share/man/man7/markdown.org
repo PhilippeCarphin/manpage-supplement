@@ -1,0 +1,46 @@
+* #+TITLE:manpage-template
+
+* NAME
+
+Markdown notes
+
+** DETAILS
+
+Collapsible section
+#+begin_src
+<details>
+    <summary>Text when collapsed</summary>
+
+    Text when expanded
+</details>
+#+end_src
+
+*IMPORTANT*: We need an empty line at the start in some cases or the
+rendering of code blocks is messed up.
+
+** LINKS
+
+#+begin_src
+[Displayed Text](https://the-url.com)
+#+end_src
+
+** FOOTNOTES
+
+Footnotes and footnote references are of the form =[^...]= where =...= can
+be a number or a name.
+
+In the text, we reference the footnote with
+
+#+begin_src
+Lorem ipsum dolor sit amet[^amet-def]
+#+end_src
+
+And we define the content of the footnote with =[^...]: Text= anywhere in
+the text as long as it appears at the start of a line.
+#+begin_src
+[^amet-def]: "Amet" is a latin word meaning ...
+#+end_src
+
+See [[https://www.markdownguide.org/extended-syntax/#footnotes][Markdown Guide: Footnotes]]:
+- The footnote itself can be anywhere
+- Named footnotes are still rendered as superscript numbers.
