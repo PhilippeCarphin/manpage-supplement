@@ -52,6 +52,16 @@ the configure script that adds =-Wl,--as-needed= to =LD_FLAGS=.  Otherwise the
 final executable didn't have =libpython3.so= in the =ldd= output and at runtime
 vim would not load plugins that needed things from =libpython3.so=.
 
+I had to do =LIBRARY_PATH=~/fs1/lib ./configure ...= otherwise it wasn't finding
+ncurses.
+
+UPDATE: Now the configure command should be
+#+begin_src shell
+LIBRARY_PATH=$HOME/fs1/lib C_INCLUDE_PATH=$HOME/fs1/include ./configure --prefix=<...> --enable-python3interp=dynamic
+#+end_src
+and the =make= command should be run with those same environment variables
+set.
+
 * BASH
 
 For =C-l= to clear the screen as it should, BASH needs to be compiled with
