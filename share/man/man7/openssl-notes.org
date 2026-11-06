@@ -11,13 +11,16 @@ openssl-notes - Some notes about openssl commands
 openssl x509 -noout -in FILE.pem -text
 while openssl x509 -noout -text ; do : ; done < FILE.pem
 
+# Print info on certificate signing request
+openssl req -in REQUEST_FILE -text -noout
+
+# Print info on public or private key
+openssl pkey -in KEY_FILE -text -noout
+
 # Make certificate signing request
 openssl req -new -newkey rsa:2048 -nodes -keyout KEY_FILE -out REQUEST_FILE
 openssl req -new -newkey rsa:2048 -nodes -keyout KEY_FILE -out REQUEST_FILE -addext "subjectAltName = DNS:www.philippe-carphin.ca,DNS:example.philippe-carphin.ca"
 openssl req -new -config CONFIG_FILE -keyout KEY_FILE -out CSR_FILE
-
-# Decode certificate signing request
-openssl req -noout -in FILE.crt -text
 #+end_src
 
 * CONFIG FILE
@@ -26,6 +29,7 @@ Using a config file can speed up generation of certificate signing requests (and
 probably other =openssl= subcommands).
 
 #+begin_src conf
+# vim: ft=toml # Not really TOML but toml gives good higlighting
 [ req ]
 default_bits = 2048
 encrypt_key = no
