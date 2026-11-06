@@ -43,8 +43,8 @@ looks for files whose name matches
 
 1. Exactly the name of the command,
 2. The name of the command followed by =.bash=,
-3. The name of the command preceded by an underscore,
-4. The name of the command preceded by an underscore and followed by =.bash= (only in 2.12+),
+3. The name of the command preceded by an underscore (Not in 2.18),
+4. The name of the command preceded by an underscore and followed by =.bash= (only in 2.12+, Not in 2.18),
 
 in a list of directories formed of the following four groups (see CODE below
 for code references):
